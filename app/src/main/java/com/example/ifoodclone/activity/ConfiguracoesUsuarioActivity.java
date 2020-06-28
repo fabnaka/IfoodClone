@@ -7,16 +7,15 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.ifoodclone.R;
 
-public class NovoProdutoEmpresaActivity extends AppCompatActivity {
+public class ConfiguracoesUsuarioActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_novo_produto_empresa);
-
+        setContentView(R.layout.activity_configuracoes_usuario);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Novo Produto");
+        toolbar.setTitle("Configurações do usuário");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
