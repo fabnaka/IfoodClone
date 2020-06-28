@@ -1,14 +1,14 @@
 package com.example.ifoodclone.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ifoodclone.R;
 import com.example.ifoodclone.helper.ConfiguracaoFirebase;
@@ -33,9 +33,9 @@ public class AutenticacaoActivity extends AppCompatActivity {
         inicializaComponentes();
 
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
-        //autenticacao.signOut();
 
-        verificarUsuarioLogado();
+        autenticacao.signOut(); //desloga caso tenha usuario logado
+        verificarUsuarioLogado(); //verifica se tem usuario logado
 
 
         botaoCadastrar.setOnClickListener(new View.OnClickListener() {
