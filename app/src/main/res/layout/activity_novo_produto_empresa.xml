@@ -13,4 +13,60 @@
         android:layout_height="wrap_content" />
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/editProdutoNome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edit_text"
+            android:drawableLeft="@drawable/ic_baseline_local_grocery_store_24"
+            android:ems="10"
+            android:hint="Nome do Produto"
+            android:inputType="text"
+            android:padding="16dp" />
+
+        <EditText
+            android:id="@+id/editProdutoDescricao"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-2dp"
+            android:background="@drawable/bg_edit_text"
+            android:drawableLeft="@drawable/ic_baseline_category_24"
+            android:ems="10"
+            android:hint="Descrição"
+            android:inputType="text"
+            android:padding="16dp" />
+
+        <EditText
+            android:id="@+id/editProdutoPreco"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-2dp"
+            android:background="@drawable/bg_edit_text"
+            android:drawableLeft="@drawable/ic_baseline_attach_money_24"
+            android:ems="10"
+            android:hint="Preço"
+            android:inputType="numberDecimal"
+            android:padding="16dp" />
+
+        <Button
+            android:id="@+id/botaoSalvarProduto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:onClick="validarDadosProdutos"
+            android:padding="16dp"
+            android:text="Salvar"
+            android:textColorLink="#FFFFFF"
+            android:theme="@style/botaoLogar" />
+
+
+    </LinearLayout>
+
+
 </LinearLayout>
