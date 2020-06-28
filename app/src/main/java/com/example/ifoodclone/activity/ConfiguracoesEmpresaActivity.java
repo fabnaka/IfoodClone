@@ -19,10 +19,17 @@ import com.example.ifoodclone.R;
 import com.example.ifoodclone.helper.ConfiguracaoFirebase;
 import com.example.ifoodclone.helper.UsuarioFirebase;
 import com.example.ifoodclone.model.Empresa;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 
@@ -34,6 +41,8 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
     private static final int SELECAO_GALERIA = 200;
 
     private StorageReference storageReference;
+
+    private DatabaseReference firebaseRef;
 
     private String idUsuarioLogado;
 
@@ -48,7 +57,7 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
         iniciaComponentes();
 
         storageReference = ConfiguracaoFirebase.getFirebaseStorage();
-
+        firebaseRef = ConfiguracaoFirebase.getFirebase();
         idUsuarioLogado = UsuarioFirebase.getIdentificadorUsuario();
 
         //Configuração toolbar
@@ -66,6 +75,37 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
                 if (i.resolveActivity(getPackageManager())!=null){
                     startActivityForResult(i,SELECAO_GALERIA);
                 }
+            }
+        });
+
+
+        recuperarDadosEmpresa();
+
+    }
+
+    private void recuperarDadosEmpresa(){
+        DatabaseReference empresaRef = firebaseRef.child("empresas").child(idUsuarioLogado);
+        empresaRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue()!=null){
+                    Empresa empresa = dataSnapshot.getValue(Empresa.class);
+                    editEmpresaNome.setText(empresa.getNome());
+                    editEmpresaCategoria.setText(empresa.getCategoria());
+                    editEmpresaTaxa.setText(empresa.getPrecoEntrega().toString());
+                    editEmpresaTempo.setText(empresa.getTempo());
+
+                    urlImagemSelecionada = empresa.getUrlImagem();
+                    if (urlImagemSelecionada!=""){
+
+                        Picasso.get().load(urlImagemSelecionada).into(imagePerfilEmpresa);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
@@ -86,13 +126,15 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
                         Empresa empresa = new Empresa();
                         empresa.setIdUsuario(idUsuarioLogado);
                         empresa.setNome(nome);
-                        empresa.setPrecoEntrega(Double.parseDouble(taxa));
+                        empresa.setPrecoEntrega(taxa);
+                        exibirMensagem("Até aqui");
                         empresa.setCategoria(categoria);
                         empresa.setTempo(tempo);
                         empresa.setUrlImagem(urlImagemSelecionada);
                         empresa.salvar();
                         exibirMensagem("Dados salvos com sucesso");
                         finish();
+
 
 
                     }else{
@@ -139,7 +181,7 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
                     imagem.compress(Bitmap.CompressFormat.JPEG,70, baos);
                     byte[] dadosImagem = baos.toByteArray();
 
-                    StorageReference imagemRef = storageReference.child("imagens").child("empresas").child(idUsuarioLogado+"jpeg");
+                    final StorageReference imagemRef = storageReference.child("imagens").child("empresas").child(idUsuarioLogado+"jpeg");
 
                     UploadTask uploadTask = imagemRef.putBytes(dadosImagem);
                     uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -150,7 +192,16 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
                     }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            urlImagemSelecionada = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+
+
+                            imagemRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    urlImagemSelecionada = task.getResult().toString();
+                                }
+                            });
+
+
 
                             Toast.makeText(ConfiguracoesEmpresaActivity.this, "Sucesso ao fazer upload da imagem", Toast.LENGTH_SHORT).show();
                         }
