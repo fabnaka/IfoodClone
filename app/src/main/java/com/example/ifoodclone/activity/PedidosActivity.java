@@ -2,6 +2,8 @@ package com.example.ifoodclone.activity;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +15,7 @@ import com.example.ifoodclone.R;
 import com.example.ifoodclone.adapter.AdapterPedido;
 import com.example.ifoodclone.helper.ConfiguracaoFirebase;
 import com.example.ifoodclone.helper.UsuarioFirebase;
+import com.example.ifoodclone.listener.RecyclerItemClickListener;
 import com.example.ifoodclone.model.Pedido;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -57,6 +60,26 @@ public class PedidosActivity extends AppCompatActivity {
         recyclerPedidos.setAdapter(adapterPedido);
 
         recuperarPedidos();
+
+        //Adicionar evento de clique no recycler
+        recyclerPedidos.addOnItemTouchListener(new RecyclerItemClickListener(this, recyclerPedidos, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+                Pedido pedido = pedidos.get(position);
+                pedido.setStatus("finalizado");
+                pedido.atualizarStatus();
+            }
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        }));
 
     }
 
