@@ -34,7 +34,7 @@ public class AutenticacaoActivity extends AppCompatActivity {
 
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
-        //autenticacao.signOut(); //desloga caso tenha usuario logado
+        autenticacao.signOut(); //desloga caso tenha usuario logado
         verificarUsuarioLogado(); //verifica se tem usuario logado
 
 

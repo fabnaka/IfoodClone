@@ -1,8 +1,5 @@
 package com.example.ifoodclone.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,9 +8,12 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.ifoodclone.R;
 import com.example.ifoodclone.helper.ConfiguracaoFirebase;
-import com.example.ifoodclone.model.Usuario;
+import com.example.ifoodclone.model.Cadastro;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -28,7 +28,7 @@ public class CadastroActivity extends AppCompatActivity {
     private EditText campoNome, campoEmail, campoSenha;
     private Switch switchTipo;
     private FirebaseAuth autenticacao;
-    private Usuario usuario;
+    private Cadastro cadastro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,17 +51,17 @@ public class CadastroActivity extends AppCompatActivity {
                 if (!nome.isEmpty()){
                     if (!email.isEmpty()){
                         if (!senha.isEmpty()){
-                            usuario= new Usuario();
-                            usuario.setNome(nome);
-                            usuario.setEmail(email);
-                            usuario.setSenha(senha);
+                            cadastro = new Cadastro();
+                            cadastro.setNome(nome);
+                            cadastro.setEmail(email);
+                            cadastro.setSenha(senha);
 
 
                             if (!switchTipo.isChecked()){ //caso o switch estiver em Usuario
-                                usuario.setTipo("U");
+                                cadastro.setTipo("U");
                             }
                             else { //caso o switch estiver em Empresa
-                                usuario.setTipo("E");
+                                cadastro.setTipo("E");
                             }
 
                             cadastrarUsuario();
@@ -86,17 +86,17 @@ public class CadastroActivity extends AppCompatActivity {
 
     public void cadastrarUsuario(){
 
-        autenticacao.createUserWithEmailAndPassword(usuario.getEmail(),usuario.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        autenticacao.createUserWithEmailAndPassword(cadastro.getEmail(), cadastro.getSenha()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) { //caso o cadastro for sucedido
 
 
                     String idUsuario = task.getResult().getUser().getUid();
-                    usuario.setId(idUsuario);
-                    usuario.salvar();
+                    cadastro.setId(idUsuario);
+                    cadastro.salvar();
 
-                    if (usuario.getTipo().equals("U")){ //caso o cadastro for usuario
+                    if (cadastro.getTipo().equals("U")){ //caso o cadastro for usuario
                         Toast.makeText(CadastroActivity.this, "Cadastro de usuario realizado com sucesso", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                     } else { //caso o cadastro for empresa
