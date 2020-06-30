@@ -2,6 +2,7 @@
 Alunos: Fábio Shiniti Nakazato   RGA: 2017.1902.015-9
 
 VISÃO GERAL:
+
 O app possui o objtivo de recriar um clone do aplicativo de delivery de comida Ifood, onde há possibilidade para a seleção de itens pelos usuários através do cardápio
 disponibilizado pelas empresas.
 
