@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_edit_text"
             android:drawableLeft="@drawable/ic_baseline_person_24"
+            android:drawablePadding="5dp"
             android:ems="10"
             android:hint="Nome da Empresa"
             android:inputType="text"
@@ -44,6 +45,7 @@
             android:layout_marginTop="-2dp"
             android:background="@drawable/bg_edit_text"
             android:drawableLeft="@drawable/ic_baseline_category_24"
+            android:drawablePadding="5dp"
             android:ems="10"
             android:hint="Categoria"
             android:inputType="text"
@@ -56,6 +58,7 @@
             android:layout_marginTop="-2dp"
             android:background="@drawable/bg_edit_text"
             android:drawableLeft="@drawable/ic_baseline_time_to_leave_24"
+            android:drawablePadding="5dp"
             android:ems="10"
             android:hint="Tempo de entrega"
             android:inputType="text"
@@ -68,9 +71,10 @@
             android:layout_marginTop="-2dp"
             android:background="@drawable/bg_edit_text"
             android:drawableLeft="@drawable/ic_baseline_attach_money_24"
+            android:drawablePadding="5dp"
             android:ems="10"
             android:hint="Taxa de entrega"
-            android:inputType="text"
+            android:inputType="numberDecimal"
             android:padding="16dp" />
 
         <Button

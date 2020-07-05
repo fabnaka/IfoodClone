@@ -12,7 +12,7 @@ public class Empresa implements Serializable {
     private String nome;
     private String tempo;
     private String categoria;
-    private String precoEntrega;
+    private Double precoEntrega;
 
     public Empresa() {
     }
@@ -65,11 +65,11 @@ public class Empresa implements Serializable {
         this.categoria = categoria;
     }
 
-    public String getPrecoEntrega() {
+    public Double getPrecoEntrega() {
         return precoEntrega;
     }
 
-    public void setPrecoEntrega(String precoEntrega) {
+    public void setPrecoEntrega(Double precoEntrega) {
         this.precoEntrega = precoEntrega;
     }
 }

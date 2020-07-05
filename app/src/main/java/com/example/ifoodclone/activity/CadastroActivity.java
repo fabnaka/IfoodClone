@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.ifoodclone.R;
 import com.example.ifoodclone.helper.ConfiguracaoFirebase;
 import com.example.ifoodclone.model.Cadastro;
+import com.example.ifoodclone.model.Empresa;
+import com.example.ifoodclone.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -97,9 +99,21 @@ public class CadastroActivity extends AppCompatActivity {
                     cadastro.salvar();
 
                     if (cadastro.getTipo().equals("U")){ //caso o cadastro for usuario
+
+                        Usuario usuario = new Usuario();
+                        usuario.setIdUsuario(idUsuario);
+                        usuario.setNome(cadastro.getNome());
+                        usuario.salvar();
+
                         Toast.makeText(CadastroActivity.this, "Cadastro de usuario realizado com sucesso", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                     } else { //caso o cadastro for empresa
+
+                        Empresa empresa = new Empresa();
+                        empresa.setIdUsuario(idUsuario);
+                        empresa.setNome(cadastro.getNome());
+                        empresa.salvar();
+
                         Toast.makeText(CadastroActivity.this, "Cadastro de empresa realizado com sucesso", Toast.LENGTH_LONG).show();
 
                         startActivity(new Intent(getApplicationContext(), EmpresaActivity.class));
@@ -115,7 +129,7 @@ public class CadastroActivity extends AppCompatActivity {
                     } catch (FirebaseAuthInvalidCredentialsException e){
                         erroExcecao = "Favor digitar um email válido";
                     } catch (FirebaseAuthUserCollisionException e){
-                        erroExcecao = "O email já foi cadastroado";
+                        erroExcecao = "O email já foi cadastrado";
                     } catch (Exception e){
                         erroExcecao = "ao cadastrar usuário: " + e.getMessage();
                         e.printStackTrace();

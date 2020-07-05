@@ -92,7 +92,9 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
                     Empresa empresa = dataSnapshot.getValue(Empresa.class);
                     editEmpresaNome.setText(empresa.getNome());
                     editEmpresaCategoria.setText(empresa.getCategoria());
-                    editEmpresaTaxa.setText(empresa.getPrecoEntrega().toString());
+                    if (empresa.getPrecoEntrega()!=null){
+                        editEmpresaTaxa.setText(empresa.getPrecoEntrega().toString());
+                    }
                     editEmpresaTempo.setText(empresa.getTempo());
 
                     urlImagemSelecionada = empresa.getUrlImagem();
@@ -126,12 +128,13 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
                         Empresa empresa = new Empresa();
                         empresa.setIdUsuario(idUsuarioLogado);
                         empresa.setNome(nome);
-                        empresa.setPrecoEntrega(taxa);
-                        exibirMensagem("Até aqui");
+                        empresa.setPrecoEntrega(Double.parseDouble(taxa));
                         empresa.setCategoria(categoria);
                         empresa.setTempo(tempo);
                         empresa.setUrlImagem(urlImagemSelecionada);
+
                         empresa.salvar();
+
                         exibirMensagem("Dados salvos com sucesso");
                         finish();
 

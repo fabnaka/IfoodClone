@@ -81,7 +81,7 @@ public class EmpresaActivity extends AppCompatActivity {
                 Produto produtoSelecionado = produtos.get(position);
                 produtoSelecionado.remover();
 
-                Toast.makeText(EmpresaActivity.this, "Produto excluído com sucessp!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EmpresaActivity.this, "Produto excluído com sucesso!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
