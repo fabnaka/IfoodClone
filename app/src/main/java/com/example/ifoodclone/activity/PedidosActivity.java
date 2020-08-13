@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -69,10 +70,12 @@ public class PedidosActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onLongItemClick(View view, int position) {
+            public void onLongItemClick(View view, int position) {//finaliza os pedidos
                 Pedido pedido = pedidos.get(position);
                 pedido.setStatus("finalizado");
                 pedido.atualizarStatus();
+
+                Toast.makeText(PedidosActivity.this, "Pedido finalizado!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -88,17 +91,17 @@ public class PedidosActivity extends AppCompatActivity {
         dialog = new SpotsDialog.Builder().setContext(this).setMessage("Carregando dados").setCancelable(false).build();
         dialog.show();
 
-        DatabaseReference pedidosRef = firebaseRef.child("pedidos").child(idEmpresa);
-        Query pedidosPesquisa = pedidosRef.orderByChild("status").equalTo("confirmado");
+        DatabaseReference pedidosRef = firebaseRef.child("pedidos").child(idEmpresa); //acessa o nó pedidos e depois o nó id emrpesa
+        Query pedidosPesquisa = pedidosRef.orderByChild("status").equalTo("confirmado"); // recupera os dados com status confirmado
 
         pedidosPesquisa.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                pedidos.clear();
+                pedidos.clear();//limpa a lista
                 if (dataSnapshot.getValue()!=null){
-                    for (DataSnapshot ds: dataSnapshot.getChildren()){
+                    for (DataSnapshot ds: dataSnapshot.getChildren()){ //percorre os pedidos da empresa
                         Pedido pedido = ds.getValue(Pedido.class);
-                        pedidos.add(pedido);
+                        pedidos.add(pedido); //adiciona o pedido na lista
                     }
                     adapterPedido.notifyDataSetChanged();
                     dialog.dismiss();

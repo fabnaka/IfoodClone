@@ -53,7 +53,7 @@ public class ConfiguracoesUsuarioActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if ( dataSnapshot.getValue()!=null ) {
 
-                    Usuario usuario = dataSnapshot.getValue(Usuario.class);
+                    Usuario usuario = dataSnapshot.getValue(Usuario.class); //Recupera os dados do usuario em um objeto
 
                     editUsuarioNome.setText(usuario.getNome());
                     editUsuarioEndereco.setText(usuario.getEndereco());

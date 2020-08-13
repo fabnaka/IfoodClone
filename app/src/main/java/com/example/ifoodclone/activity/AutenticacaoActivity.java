@@ -34,13 +34,13 @@ public class AutenticacaoActivity extends AppCompatActivity {
 
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
 
-        autenticacao.signOut(); //desloga caso tenha usuario logado
+        //autenticacao.signOut(); //desloga caso tenha usuario logado
         verificarUsuarioLogado(); //verifica se tem usuario logado
 
 
         botaoCadastrar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) { //configuração botao cadastrar
                 Intent i = new Intent(getApplicationContext(),CadastroActivity.class);
 
                 startActivity(i);
@@ -50,7 +50,7 @@ public class AutenticacaoActivity extends AppCompatActivity {
 
         botaoLogar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) { // configuração botao logar
                 String email = campoEmail.getText().toString();
                 String senha = campoSenha.getText().toString();
 
@@ -88,7 +88,7 @@ public class AutenticacaoActivity extends AppCompatActivity {
 
     }
 
-    private void verificarUsuarioLogado(){
+    private void verificarUsuarioLogado(){ // verifica se possui um usuario logado
         FirebaseUser usuarioAtual = autenticacao.getCurrentUser();
 
         if (usuarioAtual!=null){

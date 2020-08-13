@@ -51,4 +51,7 @@ dependencies {
     //Dialog de progresso
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
 
+    //Mascara de moeda
+    implementation 'com.github.BlacKCaT27:CurrencyEditText:2.0.2'
+
 }

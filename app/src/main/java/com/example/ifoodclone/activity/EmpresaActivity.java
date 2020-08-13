@@ -35,8 +35,8 @@ import java.util.List;
 public class EmpresaActivity extends AppCompatActivity {
 
     private FirebaseAuth autenticacao;
-    private RecyclerView recyclerProdutos;
-    private AdapterProduto adapterProduto;
+    private RecyclerView recyclerProdutos; //para listagem dos produtos
+    private AdapterProduto adapterProduto;  // modelo dos produtos na listagens
     private List <Produto> produtos = new ArrayList<>();
     private DatabaseReference firebaseRef;
     private String idUsuarioLogado;
@@ -98,12 +98,12 @@ public class EmpresaActivity extends AppCompatActivity {
         produtosRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                produtos.clear();
+                produtos.clear(); //limpa a lista de produtos caso exista
 
-                for (DataSnapshot ds: dataSnapshot.getChildren()){
-                    produtos.add(ds.getValue(Produto.class));
+                for (DataSnapshot ds: dataSnapshot.getChildren()){  //percorre todos os nós de produtos com o id do usuario logado
+                    produtos.add(ds.getValue(Produto.class)); // adiciona cada nó na lista de produtos
                 }
-                adapterProduto.notifyDataSetChanged();
+                adapterProduto.notifyDataSetChanged(); //atualiza adapter no caso de mudança
             }
 
             @Override
@@ -115,7 +115,7 @@ public class EmpresaActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) { //implantação do menu
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_empresa, menu);

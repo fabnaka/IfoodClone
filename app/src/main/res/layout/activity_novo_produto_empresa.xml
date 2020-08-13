@@ -19,6 +19,14 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <ImageView
+            android:id="@+id/imagemProduto"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:srcCompat="@drawable/perfil" />
+
         <EditText
             android:id="@+id/editProdutoNome"
             android:layout_width="match_parent"
@@ -44,16 +52,15 @@
             android:inputType="text"
             android:padding="16dp" />
 
-        <EditText
-            android:id="@+id/editProdutoPreco"
+        <com.blackcat.currencyedittext.CurrencyEditText
+            android:id="@+id/editProdutoPreco2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-2dp"
             android:background="@drawable/bg_edit_text"
-            android:drawableLeft="@drawable/ic_baseline_attach_money_24"
             android:drawablePadding="5dp"
             android:ems="10"
-            android:hint="Preço"
+            android:hint="Preço do produto"
             android:inputType="numberDecimal"
             android:padding="16dp" />
 

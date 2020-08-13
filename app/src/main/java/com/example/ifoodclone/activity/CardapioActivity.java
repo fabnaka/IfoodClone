@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -98,11 +99,11 @@ public class CardapioActivity extends AppCompatActivity {
         adapterProduto = new AdapterProduto(produtos,this);
         recyclerProdutosCardapio.setAdapter(adapterProduto);
 
-        //Configuração evento de clique
+        //Configuração evento de clique no cardápio
         recyclerProdutosCardapio.addOnItemTouchListener(new RecyclerItemClickListener(this, recyclerProdutosCardapio, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                confirmarQuantidade(position);
+                confirmarQuantidade(position); //abre a quantidade de produtos de acordo com a posição
             }
 
             @Override
@@ -134,7 +135,7 @@ public class CardapioActivity extends AppCompatActivity {
 
         builder.setView(editQuantidade);
 
-        builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {//caso clicar no botao confirmar
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -151,7 +152,7 @@ public class CardapioActivity extends AppCompatActivity {
                 itensCarrinho.add(itemPedido);
 
                 if (pedidoRecuperado==null){
-                    pedidoRecuperado = new Pedido(idUsuarioLogado,idEmpresa);
+                    pedidoRecuperado = new Pedido(idUsuarioLogado,idEmpresa); //cria um nó pedido
                 }
 
                 pedidoRecuperado.setNome(usuario.getNome());
@@ -159,10 +160,13 @@ public class CardapioActivity extends AppCompatActivity {
                 pedidoRecuperado.setItens(itensCarrinho);
                 pedidoRecuperado.salvar();
 
+
+
+
             }
         });
 
-        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {//caso clicar no botao cancelar
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -175,8 +179,8 @@ public class CardapioActivity extends AppCompatActivity {
 
     private void recuperarDadosUsuario() {
 
-        dialog = new SpotsDialog.Builder().setContext(this).setMessage("Carregando dados").setCancelable(false).build();
-        dialog.show();
+        dialog = new SpotsDialog.Builder().setContext(this).setMessage("Carregando dados").setCancelable(false).build(); // Config Alert
+        dialog.show(); // Alert que impede a ação dos usuarios até a finalização do método
 
         DatabaseReference usuariosRef = firebaseRef.child("usuarios").child(idUsuarioLogado);
 
@@ -199,7 +203,7 @@ public class CardapioActivity extends AppCompatActivity {
 
     }
 
-    private void recuperarPedido() {
+    private void recuperarPedido() { //recupera o pedido do usuario
 
         final DatabaseReference pedidoRef = firebaseRef.child("pedidos_usuario").child(idEmpresa).child(idUsuarioLogado);
         pedidoRef.addValueEventListener(new ValueEventListener() {
@@ -212,25 +216,25 @@ public class CardapioActivity extends AppCompatActivity {
 
                 if (dataSnapshot.getValue()!=null){
 
-                    pedidoRecuperado = dataSnapshot.getValue(Pedido.class);
-                    itensCarrinho = pedidoRecuperado.getItens();
+                    pedidoRecuperado = dataSnapshot.getValue(Pedido.class); //recupera o pedido
+                    itensCarrinho = pedidoRecuperado.getItens(); //recupera todos os itens pedidos
 
-                    for (ItemPedido itemPedido: itensCarrinho){
+                    for (ItemPedido itemPedido: itensCarrinho){ //percorre todos os itens
 
                         int qtde = itemPedido.getQuantidade();
                         Double preco = itemPedido.getPreco();
 
-                        totalCarrinho += (qtde*preco);
-                        qtdItensCarrinho += qtde;
+                        totalCarrinho += (qtde*preco); //resultado da quantidade * o valor
+                        qtdItensCarrinho += qtde; //soma a quantidade total de itens
                     }
                 }
 
-                DecimalFormat df = new DecimalFormat("0.00");
+                DecimalFormat df = new DecimalFormat("0.00"); //formatação da string preço
 
                 textCarrinhoQtd.setText("qtd: " + String.valueOf(qtdItensCarrinho));
                 textCarrinhoTotal.setText("R$ " + df.format(totalCarrinho));
 
-                dialog.dismiss();
+                dialog.dismiss(); //Para o alert
 
             }
 
@@ -245,15 +249,15 @@ public class CardapioActivity extends AppCompatActivity {
 
     private void recuperarProdutos(){
 
-        DatabaseReference produtosRef = firebaseRef.child("produtos").child(idEmpresa);
+        DatabaseReference produtosRef = firebaseRef.child("produtos").child(idEmpresa); //acessa do banco de dados nó produtos com o id da empresa
 
         produtosRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 produtos.clear();
 
-                for (DataSnapshot ds: dataSnapshot.getChildren()){
-                    produtos.add(ds.getValue(Produto.class));
+                for (DataSnapshot ds: dataSnapshot.getChildren()){ //percorre todos os nós produtos
+                    produtos.add(ds.getValue(Produto.class)); // adiciona na lista cada produto
                 }
                 adapterProduto.notifyDataSetChanged();
             }
@@ -287,7 +291,7 @@ public class CardapioActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void confirmarPedido() {
+    private void confirmarPedido() { //executa ao clicar no botao confirmar
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Selecione uma forma de pagamento");
@@ -310,14 +314,16 @@ public class CardapioActivity extends AppCompatActivity {
 
         builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
+            public void onClick(DialogInterface dialog, int which) { //caso confirmar o pedido
                 String observacao = editObservacao.getText().toString();
                 pedidoRecuperado.setMetodoPagamento(metodoPagamento);
                 pedidoRecuperado.setObservacao(observacao);
                 pedidoRecuperado.setStatus("confirmado");
-                pedidoRecuperado.confirmar();
-                pedidoRecuperado.remover();
+                pedidoRecuperado.confirmar(); //adiciona o nó pedidos
+                pedidoRecuperado.remover(); //remove o nó pedido_usuario
                 pedidoRecuperado = null;
+
+                Toast.makeText(CardapioActivity.this, "Pedido confirmado e encaminhado ao restaurante", Toast.LENGTH_SHORT).show();
 
             }
         });

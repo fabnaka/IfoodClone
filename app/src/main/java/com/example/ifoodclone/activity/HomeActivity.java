@@ -55,7 +55,7 @@ public class HomeActivity extends AppCompatActivity {
         toolbar.setTitle("Ifood");
         setSupportActionBar(toolbar);
 
-        //Conguracão recycler view
+        //Conguracão recycler view de empresas
         recyclerEmpresa.setLayoutManager(new LinearLayoutManager(this));
         recyclerEmpresa.setHasFixedSize(true);
         adapterEmpresa = new AdapterEmpresa(empresas);
@@ -68,19 +68,19 @@ public class HomeActivity extends AppCompatActivity {
         searchView.setHint("Pesquisar restaurantes");
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public boolean onQueryTextSubmit(String query) {//Pesquisar ao presionar o enter
                 return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(String newText) {// Pesquisar conforme ir digitando
                 pesquisarEmpresas(newText);
                 return true;
             }
         });
 
 
-        //Adicionar evento de clique
+        //Adicionar evento de clique no recycler
         recyclerEmpresa.addOnItemTouchListener(new RecyclerItemClickListener(this, recyclerEmpresa, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -108,7 +108,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void pesquisarEmpresas(String pesquisa){
         DatabaseReference empresasRef = firebaseRef.child("empresas");
-        Query query = empresasRef.orderByChild("nome").startAt(pesquisa).endAt(pesquisa + "\uf8ff");
+        Query query = empresasRef.orderByChild("nome").startAt(pesquisa).endAt(pesquisa + "\uf8ff"); //método de pesquisa no banco de dados
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -116,7 +116,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 empresas.clear();
 
-                for (DataSnapshot ds: dataSnapshot.getChildren()){
+                for (DataSnapshot ds: dataSnapshot.getChildren()){//Lista o resultado das pesquisas no adapter
                     empresas.add(ds.getValue(Empresa.class));
                 }
                 adapterEmpresa.notifyDataSetChanged();

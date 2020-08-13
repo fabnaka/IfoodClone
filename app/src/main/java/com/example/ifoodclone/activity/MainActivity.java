@@ -1,10 +1,10 @@
 package com.example.ifoodclone.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ifoodclone.R;
 
@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        new Handler().postDelayed(new Runnable() {
+        new Handler().postDelayed(new Runnable() { //tela de inicio que some após um tempo
             @Override
             public void run() {
                 irAutenticacao();

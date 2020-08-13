@@ -11,6 +11,8 @@ public class Produto {
     private String descrcao;
     private Double preco;
 
+    private String urlImagem;
+
 
     public Produto() {
         DatabaseReference firebaseRef = ConfiguracaoFirebase.getFirebase();
@@ -69,5 +71,13 @@ public class Produto {
 
     public void setPreco(Double preco) {
         this.preco = preco;
+    }
+
+    public String getUrlImagem() {
+        return urlImagem;
+    }
+
+    public void setUrlImagem(String urlImagem) {
+        this.urlImagem = urlImagem;
     }
 }

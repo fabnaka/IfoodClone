@@ -26,6 +26,15 @@
             android:layout_marginBottom="8dp"
             android:src="@drawable/perfil" />
 
+        <Spinner
+            android:id="@+id/spinnerCategoria"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:padding="16dp"
+            android:spinnerMode="dropdown" />
+
         <EditText
             android:id="@+id/editEmpresaNome"
             android:layout_width="match_parent"
@@ -35,19 +44,6 @@
             android:drawablePadding="5dp"
             android:ems="10"
             android:hint="Nome da Empresa"
-            android:inputType="text"
-            android:padding="16dp" />
-
-        <EditText
-            android:id="@+id/editEmpresaCategoria"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-2dp"
-            android:background="@drawable/bg_edit_text"
-            android:drawableLeft="@drawable/ic_baseline_category_24"
-            android:drawablePadding="5dp"
-            android:ems="10"
-            android:hint="Categoria"
             android:inputType="text"
             android:padding="16dp" />
 
@@ -64,13 +60,12 @@
             android:inputType="text"
             android:padding="16dp" />
 
-        <EditText
-            android:id="@+id/editEmpresaTaxa"
+        <com.blackcat.currencyedittext.CurrencyEditText
+            android:id="@+id/editEmpresaTaxa2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-2dp"
             android:background="@drawable/bg_edit_text"
-            android:drawableLeft="@drawable/ic_baseline_attach_money_24"
             android:drawablePadding="5dp"
             android:ems="10"
             android:hint="Taxa de entrega"
@@ -83,7 +78,7 @@
             android:layout_marginTop="0dp"
             android:onClick="validarDadosEmpresa"
             android:padding="16dp"
-            android:text="Salvar"
+            android:text="Salvar dados"
             android:textColorLink="#FFFFFF"
             android:theme="@style/botaoLogar" />
 

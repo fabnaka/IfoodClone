@@ -42,7 +42,7 @@ public class CadastroActivity extends AppCompatActivity {
 
         autenticacao= ConfiguracaoFirebase.getFirebaseAutenticacao();
 
-        botaoCadastrar.setOnClickListener(new View.OnClickListener() {
+        botaoCadastrar.setOnClickListener(new View.OnClickListener() { //configuração clique botao cadastrar
             @Override
             public void onClick(View v) {
                 String nome = campoNome.getText().toString();
@@ -94,11 +94,11 @@ public class CadastroActivity extends AppCompatActivity {
                 if (task.isSuccessful()) { //caso o cadastro for sucedido
 
 
-                    String idUsuario = task.getResult().getUser().getUid();
+                    String idUsuario = task.getResult().getUser().getUid(); //recupera o id
                     cadastro.setId(idUsuario);
-                    cadastro.salvar();
+                    cadastro.salvar(); // salva o cadastro no banco de dados
 
-                    if (cadastro.getTipo().equals("U")){ //caso o cadastro for usuario
+                    if (cadastro.getTipo().equals("U")){ //caso o cadastro for usuario, vai criar um no usuario no banco
 
                         Usuario usuario = new Usuario();
                         usuario.setIdUsuario(idUsuario);
@@ -107,7 +107,7 @@ public class CadastroActivity extends AppCompatActivity {
 
                         Toast.makeText(CadastroActivity.this, "Cadastro de usuario realizado com sucesso", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                    } else { //caso o cadastro for empresa
+                    } else { //caso o cadastro for empresa, vai criar um cadastro empresa no banco
 
                         Empresa empresa = new Empresa();
                         empresa.setIdUsuario(idUsuario);

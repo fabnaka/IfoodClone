@@ -1,13 +1,16 @@
 package com.example.ifoodclone.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.blackcat.currencyedittext.CurrencyEditText;
 import com.example.ifoodclone.R;
 import com.example.ifoodclone.helper.ConfiguracaoFirebase;
 import com.example.ifoodclone.helper.UsuarioFirebase;
@@ -32,11 +36,20 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Locale;
+
+import dmax.dialog.SpotsDialog;
 
 public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
 
-    private EditText editEmpresaNome, editEmpresaCategoria, editEmpresaTempo, editEmpresaTaxa;
+    private EditText editEmpresaNome, editEmpresaTempo, editEmpresaTaxa;
     private ImageView imagePerfilEmpresa;
+
+    private String [] categorias = new String[]{
+            "Pizzaria", "Hamburgueria", "Lanche", "Comida Chinesa", "Comida japonesa"
+    };
+
+    private Spinner campoCategoria;
 
     private static final int SELECAO_GALERIA = 200;
 
@@ -47,6 +60,11 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
     private String idUsuarioLogado;
 
     private String urlImagemSelecionada = "";
+
+    private AlertDialog dialog;
+
+    private CurrencyEditText editEmpresaTaxa2;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,16 +85,18 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        imagePerfilEmpresa.setOnClickListener(new View.OnClickListener() {
+        imagePerfilEmpresa.setOnClickListener(new View.OnClickListener() {//adiciona evento de clique na imagem
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
                 if (i.resolveActivity(getPackageManager())!=null){
-                    startActivityForResult(i,SELECAO_GALERIA);
+                    startActivityForResult(i,SELECAO_GALERIA);//encaminha para a tela de midia do celular
                 }
             }
         });
+
+        carregarDadosSpinner();
 
 
         recuperarDadosEmpresa();
@@ -84,17 +104,25 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
     }
 
     private void recuperarDadosEmpresa(){
+
+        dialog = new SpotsDialog.Builder().setContext(this).setMessage("Carregando dados").setCancelable(false).build();
+        dialog.show();
+
+
+
+
         DatabaseReference empresaRef = firebaseRef.child("empresas").child(idUsuarioLogado);
         empresaRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.getValue()!=null){
-                    Empresa empresa = dataSnapshot.getValue(Empresa.class);
+                    Empresa empresa = dataSnapshot.getValue(Empresa.class);//Um objeto empresa recebe os dados daquela empresa logada
                     editEmpresaNome.setText(empresa.getNome());
-                    editEmpresaCategoria.setText(empresa.getCategoria());
+                    recuperarDadosSpinner(empresa.getCategoria());
                     if (empresa.getPrecoEntrega()!=null){
-                        editEmpresaTaxa.setText(empresa.getPrecoEntrega().toString());
+                        editEmpresaTaxa2.setText(empresa.getPrecoEntrega().toString());
                     }
+
                     editEmpresaTempo.setText(empresa.getTempo());
 
                     urlImagemSelecionada = empresa.getUrlImagem();
@@ -110,19 +138,28 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
 
             }
         });
+
+        dialog.dismiss();
     }
 
 
     public void validarDadosEmpresa(View view){
 
         String nome = editEmpresaNome.getText().toString();
-        String taxa = editEmpresaTaxa.getText().toString();
-        String categoria = editEmpresaCategoria.getText().toString();
+
+        String taxa = editEmpresaTaxa2.getText().toString();
+
+
+        String categoria = campoCategoria.getSelectedItem().toString();
         String tempo = editEmpresaTempo.getText().toString();
 
         if (!nome.isEmpty()){
             if (!categoria.isEmpty()){
                 if (!taxa.isEmpty()){
+
+                    taxa = taxa.replace(".","").replace("R$","").replace(",",".");
+                    taxa = taxa.substring(1);
+
                     if (!tempo.isEmpty()){
 
                         Empresa empresa = new Empresa();
@@ -133,9 +170,16 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
                         empresa.setTempo(tempo);
                         empresa.setUrlImagem(urlImagemSelecionada);
 
+                        dialog = new SpotsDialog.Builder().setContext(this).setMessage("Carregando dados").setCancelable(false).build();
+                        dialog.show();
+
                         empresa.salvar();
 
+                        dialog.dismiss();
+
                         exibirMensagem("Dados salvos com sucesso");
+
+                        //exibirMensagem(taxa);
                         finish();
 
 
@@ -170,29 +214,29 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
             try {
 
                 switch (requestCode){
-                    case SELECAO_GALERIA:
-                        Uri localImagem = data.getData();
-                        imagem = MediaStore.Images.Media.getBitmap(getContentResolver(), localImagem);
+                    case SELECAO_GALERIA: //caso a seleção da imagem seja na galeria
+                        Uri localImagem = data.getData(); //recupera a imagem
+                        imagem = MediaStore.Images.Media.getBitmap(getContentResolver(), localImagem); //configura a imagem recuperada
                         break;
                 }
 
                 if (imagem!=null){
 
-                    imagePerfilEmpresa.setImageBitmap(imagem);
+                    imagePerfilEmpresa.setImageBitmap(imagem); // seta a visualização da imagem
 
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    imagem.compress(Bitmap.CompressFormat.JPEG,70, baos);
+                    imagem.compress(Bitmap.CompressFormat.JPEG,70, baos); //compressão da imagem para upload
                     byte[] dadosImagem = baos.toByteArray();
 
-                    final StorageReference imagemRef = storageReference.child("imagens").child("empresas").child(idUsuarioLogado+"jpeg");
+                    final StorageReference imagemRef = storageReference.child("imagens").child("empresas").child(idUsuarioLogado+"jpeg"); //local para salvar a imagem no storage
 
                     UploadTask uploadTask = imagemRef.putBytes(dadosImagem);
                     uploadTask.addOnFailureListener(new OnFailureListener() {
                         @Override
-                        public void onFailure(@NonNull Exception e) {
+                        public void onFailure(@NonNull Exception e) {//no caso de erro ao fazer upload
                             Toast.makeText(ConfiguracoesEmpresaActivity.this, "Erro ao fazer upload da imagem", Toast.LENGTH_SHORT).show();
                         }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() { //no caso de sucesso ao fazer o upload
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
@@ -200,7 +244,7 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
                             imagemRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Uri> task) {
-                                    urlImagemSelecionada = task.getResult().toString();
+                                    urlImagemSelecionada = task.getResult().toString();//recupera a url da imagem upada
                                 }
                             });
 
@@ -220,13 +264,44 @@ public class ConfiguracoesEmpresaActivity extends AppCompatActivity {
     }
 
 
+    private void carregarDadosSpinner(){
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categorias);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        campoCategoria.setAdapter(adapter);
+    }
+
+    private void recuperarDadosSpinner(String categoria){
+        int posicaoArray = 0;
+
+        for (int i=0; i<=categorias.length-1; i++){
+            if (categorias[i].equals(categoria)){
+                posicaoArray = i;
+                break;
+            }
+            else{
+                posicaoArray=0;
+            }
+        }
+
+        campoCategoria.setSelection(posicaoArray);
+    }
+
 
 
     private void iniciaComponentes(){
         editEmpresaNome = findViewById(R.id.editEmpresaNome);
-        editEmpresaCategoria = findViewById(R.id.editEmpresaCategoria);
-        editEmpresaTaxa = findViewById(R.id.editEmpresaTaxa);
         editEmpresaTempo = findViewById(R.id.editEmpresaTempo);
         imagePerfilEmpresa = findViewById(R.id.imagePerfilEmpresa);
+        campoCategoria = findViewById(R.id.spinnerCategoria);
+
+        editEmpresaTaxa2 = findViewById(R.id.editEmpresaTaxa2);
+
+
+        Locale locale = new Locale("pt","BR");
+        editEmpresaTaxa2.setLocale(locale);
+        editEmpresaTaxa2.setText(null);
     }
 }
